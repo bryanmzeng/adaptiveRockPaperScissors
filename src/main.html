@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+        <title>AdaptiveRockPaperScissors</title>
+
+        <link rel="stylesheet" type = "text/css" href="styles.css">
+        <link rel="stylesheet" type = "text/css" href="modal.css">
+        <script src="https://kit.fontawesome.com/bb02422b7e.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <header class="header">
+                <h1>Rock Paper Scissors</h1>
+                <button id="restart" class="restart-btn">Restart Game</button>
+                <div id="score" class="score">
+                    <p>Player: 0</p>
+                    <p>Computer: 0</p>
+                </div>
+            </header>
+            <h2>Make Your Selection</h2>
+            <div class="choices">
+                <i id = "rock" class="choice fa-solid fa-hand-back-fist fa-beat fa-9x"></i>
+                <i id = "paper" class="choice fa-solid fa-hand fa-beat fa-9x"></i>
+                <i id = "scissors" class="choice fa-solid fa-hand-peace fa-beat fa-9x"></i>
+            </div>
+
+        </div>
+        <div class="modal">
+            <div id="result" class="modal-content"></div>
+        </div>
+
+        <script src = "adaptive.js"></script>
+    </body>
+</html> 

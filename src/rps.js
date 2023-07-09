@@ -1,72 +1,69 @@
+
+var prevPlayerHand = 'null';
 var games = 0;
 var draw = 0;
 var loseCounter = 0;
-var prevPlayerHand = 'null';
-var playerHand;
+var playerWins = 0;
+var computerWins = 0;
 
-
-const choices = document.querySelectorAll('.choice');
-const score = document.getElementById('.score');
-const result = document.getElementById('.result');
-const restart = document.getElementById('.restart');
-const modal = document.querySelector('.modal');
-const scoreboard = {
-    player: 0,
-    computer: 0
+window.onload = function() {
+    startGame();
 }
 
-// Play Game
+function startGame() {
+    for (let i = 0; i < 2; i++) {
+        let scoredisplay = document.createElement('div');
+        scoredisplay.id = i;
+        if (i == 0) {
+            scoredisplay.classList.add('pscore');
+            scoredisplay.innerText = "Player: 0";
+        } else {
+            scoredisplay.classList.add('cscore');
+            scoredisplay.innerText = "Computer: 0";
+        }
+        document.getElementById("score").append(scoredisplay);
+    }
+    //document.getElementById("result").innerText = "hi";
+    //document.getElementById("modal").style.display = "block";
 
-function play(e) {
-    restart.style.display = 'inline-block';
-    const playerChoice = e.target.id;
-    const computerChoice = getComputerChoice(prevPlayerHand);
-    games += 1;
-    prevPlayerHand = playerChoice;
-    const winner = round(playerChoice, computerChoice); 
-    showWinner(winner, computerChoice);
-      
+    window.addEventListener("click", clearModal);
 }
-
-
-
-// Event Listeners
-
-choices.forEach(choice => choice.addEventListener('click', play)); 
-window.addEventListener('click', clearModal);
-restart.addEventListener('click', restartGame);
-
-
-// Restart Game
-function restartGame() {
-    games = 0;
-    draw = 0;
-    loseCounter = 0;
-    scoreboard.player = 0;
-    scoreboard.computer = 0;
-    score.innerHTML = `
-        <p>Player: 0</p>
-        <p>Computer: 0</p>
-    `;
-}
-
-
-// Clear Modal
-
 function clearModal(e) {
-    if (e.target == modal) {
-        modal.style.display = 'none';
+    if (e.target == document.getElementById("modal")) {
+        document.getElementById("modal").style.display = "none";
     }
 }
 
+function restart() {
+    games = 0;
+    draw = 0;
+    loseCounter = 0;
+    playerWins = 0;
+    computerWins = 0;
+    document.getElementById("0").innerText= `Player: ${playerWins}`;
+    document.getElementById("1").innerText = `Computer: ${computerWins}`;
+}
 
+function playrock() {
+    const computerChoice = getComputerChoice(prevPlayerHand);
+    const winner = round('rock', computerChoice);
+    showWinner(winner, computerChoice);
+    prevPlayerHand = 'rock';
+}
 
+function playpaper() {
+    const computerChoice = getComputerChoice(prevPlayerHand);
+    const winner = round('paper', computerChoice);
+    showWinner(winner, computerChoice);
+    prevPlayerHand = 'paper';
+}
 
-// ADAPTIVE CODE
-//1. 1st game - rng 
-//2. after the previous game - if computer wins, play the player's hand. if computer loses, play counter to player's hand, if draw. play random hand 
-// 3. edgcase: if lose 2 times in a row (no draws in between), play a random  hand, then go back to step 2
-
+function playscissor() {
+    const computerChoice = getComputerChoice(prevPlayerHand);
+    const winner = round('scissors', computerChoice);
+    showWinner(winner, computerChoice);
+    prevPlayerHand = 'scissors';
+}
 
 
 function randomGame() {
@@ -125,7 +122,7 @@ function round(playerHand, computerHand) {
         if (computerHand == 'scissors') {
             draw = 0;
             loseCounter = 0;
-            return 'computer;'
+            return 'computer';
         }
         if (computerHand == 'rock') {
             draw = 0;
@@ -168,29 +165,27 @@ function getComputerChoice(prevPlayerHand) {
 
 function showWinner(winner, computerChoice) {
     if(winner == 'player') {
-        scoreboard.player++;
-        result.innerHTML = `
+        playerWins++;
+        document.getElementById("result").innerHTML = `
         <h1 class="text-win">You Won!</h1>
-        <i class="fas fa-hand-${computerChoice}fa-10x"></i>
-        <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)}</strong></p>
-        `;
+        
+    <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)}</strong></p>
+    `;
     } else if(winner == 'computer') {
-        scoreboard.computer++;
-        result.innerHTML = `
+        computerWins++;
+        document.getElementById("result").innerHTML = `
         <h1 class="text-lose">You Lost.</h1>
-        <i class="fas fa-hand-${computerChoice}fa-10x"></i>
+       
         <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)}</strong></p>
         `;
     } else {
-        result.innerHTML = `
+        document.getElementById("result").innerHTML = `
         <h1>It's a Draw.</h1>
-        <i class="fas fa-hand-${computerChoice}fa-10x"></i>
+        
         <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)}</strong></p>
         `;
     }
-    score.innerHTML = `
-        <p>Player: ${scoreboard.player}</p>
-        <p>Computer: ${scoreboard.computer}</p>
-        `;
+    document.getElementById("0").innerText= `Player: ${playerWins}`;
+    document.getElementById("1").innerText = `Computer: ${computerWins}`;
     modal.style.display = 'block';
 }

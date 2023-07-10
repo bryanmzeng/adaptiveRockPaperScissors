@@ -6,6 +6,8 @@ var loseCounter = 0;
 var playerWins = 0;
 var computerWins = 0;
 
+var handsPlayed = [0,0,0];
+const hands = ["rock", "paper", "scissors"];
 window.onload = function() {
     startGame();
 }
@@ -40,11 +42,13 @@ function restart() {
     loseCounter = 0;
     playerWins = 0;
     computerWins = 0;
+    handsPlayed = [0,0,0];
     document.getElementById("0").innerText= `Player: ${playerWins}`;
     document.getElementById("1").innerText = `Computer: ${computerWins}`;
 }
 
 function playrock() {
+    handsPlayed[0]++;
     const computerChoice = getComputerChoice(prevPlayerHand);
     const winner = round('rock', computerChoice);
     showWinner(winner, computerChoice);
@@ -52,6 +56,7 @@ function playrock() {
 }
 
 function playpaper() {
+    handsPlayed[1]++;
     const computerChoice = getComputerChoice(prevPlayerHand);
     const winner = round('paper', computerChoice);
     showWinner(winner, computerChoice);
@@ -59,12 +64,22 @@ function playpaper() {
 }
 
 function playscissor() {
+    handsPlayed[1]++;
     const computerChoice = getComputerChoice(prevPlayerHand);
     const winner = round('scissors', computerChoice);
     showWinner(winner, computerChoice);
     prevPlayerHand = 'scissors';
 }
 
+function majorityGame(hand) {
+    if (hand == "rock") {
+        return "paper";
+    } else if (hand == "paper") {
+        return "scissors";
+    } else {
+        return "rock";
+    }
+}
 
 function randomGame() {
     const r = Math.floor(Math.random() * 3);
@@ -151,7 +166,20 @@ function round(playerHand, computerHand) {
 }
 
 function getComputerChoice(prevPlayerHand) {
-
+    var temp = "";
+    var sum = 0;
+    for (let i = 0; i < 3; i++) {
+        sum += handsPlayed[i];
+    }
+    
+    for (let i = 0; i < 3; i++) {
+        if (handsPlayed[i] > sum / 3) {
+            temp = hands[i];
+        }
+    }
+    if (temp != "") {
+        return majorityGame(temp);
+    }
     if (games == 0 || loseCounter >= 2 || draw > 0) {
         return randomGame();
     }

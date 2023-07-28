@@ -64,7 +64,7 @@ function playpaper() {
 }
 
 function playscissor() {
-    handsPlayed[1]++;
+    handsPlayed[2]++;
     const computerChoice = getComputerChoice(prevPlayerHand);
     const winner = round('scissors', computerChoice);
     showWinner(winner, computerChoice);
@@ -166,28 +166,36 @@ function round(playerHand, computerHand) {
 }
 
 function getComputerChoice(prevPlayerHand) {
-    var temp = "";
-    var sum = 0;
-    for (let i = 0; i < 3; i++) {
-        sum += handsPlayed[i];
-    }
-    
-    for (let i = 0; i < 3; i++) {
-        if (handsPlayed[i] > sum / 3) {
-            temp = hands[i];
+     var sum = 0;
+        for (let i = 0; i < 3; i++) {
+            sum += handsPlayed[i];
         }
+    const max = handsPlayed.reduce((a, b) => Math.max(a, b), -Infinity);
+    const r = Math.floor(Math.random() * (sum));
+    if (r < max) {
+        var temp = "";
+    
+        for (let i = 0; i < 3; i++) {
+            if (handsPlayed[i] > sum / 3) {
+                temp = hands[i];
+            }
+        }
+        if (temp != "") {
+            return majorityGame(temp);
+        } else {
+            return randomGame();
+        }
+    } else {
+        if (games == 0 || loseCounter >= 2 || draw > 0) {
+            return randomGame();
+        }
+        if (loseCounter == 1) {
+            return loseGame(prevPlayerHand);
+        }
+        return winGame(prevPlayerHand);
     }
-    if (temp != "") {
-        return majorityGame(temp);
-    }
-    if (games == 0 || loseCounter >= 2 || draw > 0) {
-        return randomGame();
-    }
-    if (loseCounter == 1) {
-        return loseGame(prevPlayerHand);
-    }
-    return winGame(prevPlayerHand);
-   
+    //add wingame2 and losegame2 with weighted rng so that if the computer collects data that the player is trying to big brain it can counter it
+    //can make this play case 3
 
 }
 

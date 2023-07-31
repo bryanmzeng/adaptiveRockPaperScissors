@@ -183,7 +183,7 @@ function testGame() {
         i--;
     }
     const myParagraph = document.getElementById("result");
-    myParagraph.innerHTML = `Computer: ${computerWins}  Player: ${playerWins}`;
+    myParagraph.innerHTML = `Computer: ${computerWins}  Player: ${playerWins} Draws: ${drawGames}`;
 }
 
 function testGameHelper() {

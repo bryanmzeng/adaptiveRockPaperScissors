@@ -1,4 +1,4 @@
-var prevPlayerHand = 'null';
+/*var prevPlayerHand = 'null';
 var games = 0;
 var draw = 0;
 var loseCounter = 0;
@@ -12,7 +12,7 @@ const hands = ["rock", "paper", "scissors"];
 
 
 //plays the game
-/* function round(playerHand, computerHand) {
+function round(playerHand, computerHand) {
     if (playerHand == 'rock') {
         if (computerHand == 'rock') {
             draw +=1;
@@ -119,7 +119,7 @@ function majorityGame(hand) {
     } else {
         return "rock";
     }
-} */
+}
 function randomGame() {
     const r = Math.floor(Math.random() * 3);
     if (r == 0) {
@@ -148,7 +148,7 @@ function loseGame(prevPlayerHand) {
         return 'rock';
     }
 }
-*/
+
 
 // Funtctions for Test 1, basic strategy
 class Node {
@@ -174,14 +174,14 @@ class Node {
     }
   }
   
-  function getRandomMove() {
+function getRandomMove() {
     return hands[Math.floor(Math.random() * hands.length)];
-  }
+}
   
-  function simulateRandomGame(playerMove, computerMove) {
-    if (playerMove === computerMove) {
+function simulateRandomGame(playerMove, computerMove) {
+  if (playerMove === computerMove) {
       return 'draw';
-    } else if (
+  } else if (
       (playerMove === 'rock' && computerMove === 'scissors') ||
       (playerMove === 'paper' && computerMove === 'rock') ||
       (playerMove === 'scissors' && computerMove === 'paper')
@@ -190,68 +190,68 @@ class Node {
     } else {
       return 'computer';
     }
-  }
+}
   
-  function simulateMCTSGames(playerMove, computerMove, iterations = 10000) {
-    const rootNode = new Node(null);
+function simulateMCTSGames(playerMove, computerMove, iterations = 10000) {
+  const rootNode = new Node(null);
   
-    for (let i = 0; i < iterations; i++) {
-      let node = rootNode;
-      let playerHand = playerMove;
+  for (let i = 0; i < iterations; i++) {
+    let node = rootNode;
+    let playerHand = playerMove;
   
       // Selection phase
-      while (!node.isFullyExpanded() && node.children.length > 0) {
-        node = node.bestChild();
-        playerHand = simulateRandomGame(playerHand, node.move);
-      }
+    while (!node.isFullyExpanded() && node.children.length > 0) {
+      node = node.bestChild();
+      playerHand = simulateRandomGame(playerHand, node.move);
+    }
   
       // Expansion phase
-      if (!node.isFullyExpanded()) {
-        const unexploredHands = hands.filter((hand) => !node.children.some((child) => child.move === hand));
-        const randomUnexploredHand = unexploredHands[Math.floor(Math.random() * unexploredHands.length)];
-        node.children.push(new Node(randomUnexploredHand, node));
-        playerHand = simulateRandomGame(playerHand, randomUnexploredHand);
-      }
+    if (!node.isFullyExpanded()) {
+      const unexploredHands = hands.filter((hand) => !node.children.some((child) => child.move === hand));
+      const randomUnexploredHand = unexploredHands[Math.floor(Math.random() * unexploredHands.length)];
+      node.children.push(new Node(randomUnexploredHand, node));
+      playerHand = simulateRandomGame(playerHand, randomUnexploredHand);
+    }
   
       // Simulation phase
-      while (playerHand !== null) {
-        const computerHand = getRandomMove();
-        playerHand = simulateRandomGame(playerHand, computerHand);
-      }
+    while (playerHand !== null) {
+      const computerHand = getRandomMove();
+      playerHand = simulateRandomGame(playerHand, computerHand);
+    }
   
       // Backpropagation phase
-      let winner = playerHand;
-      while (node !== null) {
-        if (winner === 'draw') {
+    let winner = playerHand;
+    while (node !== null) {
+      if (winner === 'draw') {
           node.wins += 0.5;
-        } else if (node.move === playerMove) {
+      } else if (node.move === playerMove) {
           node.wins += winner === 'player' ? 1 : 0;
-        } else {
+      } else {
           node.wins += winner === 'computer' ? 1 : 0;
         }
-        node.visits++;
-        node = node.parent;
-      }
+      node.visits++;
+      node = node.parent;
     }
+  }
   
     // Choose the best move based on visit counts
     const bestMoveNode = rootNode.children.reduce((bestChild, child) => {
       return child.visits > bestChild.visits ? child : bestChild;
     });
     return bestMoveNode.move;
-  }
+}
   
   // Plays the game
-  function round(playerHand) {
+function round(playerHand) {
     // Update computer's move using MCTS
-    const computerHand = simulateMCTSGames(playerHand, prevComputerHand, 50000);
-    prevComputerHand = computerHand;
+  const computerHand = simulateMCTSGames(playerHand, prevComputerHand, 50000);
+  prevComputerHand = computerHand;
   
     // Update the handsPlayed array
-    handsPlayed[hands.indexOf(playerHand)]++;
+  handsPlayed[hands.indexOf(playerHand)]++;
   
     // Update game statistics
-    if (playerHand === computerHand) {
+  if (playerHand === computerHand) {
       draw++;
       loseCounter = 0;
       drawGames++;
@@ -333,3 +333,137 @@ function testGameHelper() {
 
 }*/
 
+var prevPlayerHand = 'null';
+var games = 0;
+var draw = 0;
+var loseCounter = 0;
+var playerWins = 0;
+var computerWins = 0;
+var drawGames = 0;
+var prevComputerHand = 'null';
+
+var handsPlayed = [0, 0, 0];
+const hands = ["rock", "paper", "scissors"];
+
+function randomGame() {
+  const r = Math.floor(Math.random() * 3);
+  return hands[r];
+}
+
+function getRandomMove() {
+  return hands[Math.floor(Math.random() * hands.length)];
+}
+
+function simulateRandomGame(playerMove, computerMove) {
+  if (playerMove === computerMove) {
+    return 'draw';
+  } else if (
+    (playerMove === 'rock' && computerMove === 'scissors') ||
+    (playerMove === 'paper' && computerMove === 'rock') ||
+    (playerMove === 'scissors' && computerMove === 'paper')
+  ) {
+    return 'player';
+  } else {
+    return 'computer';
+  }
+}
+
+function simulateMCTSGames(playerMove, iterations = 10) {
+  const moveCounts = [0, 0, 0];
+
+  for (let i = 0; i < iterations; i++) {
+    const computerHand = getRandomMove();
+    const result = simulateRandomGame(playerMove, computerHand);
+    moveCounts[hands.indexOf(computerHand)] += result === 'computer' ? 1 : 0.5;
+  }
+
+  // Choose the best move based on win rates
+  const bestMoveIndex = moveCounts.indexOf(Math.max(...moveCounts));
+  return hands[bestMoveIndex];
+}
+
+// Plays the game
+function round(playerHand) {
+  // Update computer's move using MCTS
+  const computerHand = simulateMCTSGames(playerHand, 10);
+  
+  prevComputerHand = computerHand;
+
+  // Update the handsPlayed array
+  handsPlayed[hands.indexOf(playerHand)]++;
+
+  // Update game statistics
+  if (playerHand === computerHand) {
+    draw++;
+    loseCounter = 0;
+    drawGames++;
+    //return 'draw';
+  } else if (
+    (playerHand === 'rock' && computerHand === 'scissors') ||
+    (playerHand === 'paper' && computerHand === 'rock') ||
+    (playerHand === 'scissors' && computerHand === 'paper')
+  ) {
+    playerWins++;
+    loseCounter = 0;
+    //return 'player';
+  } else {
+    computerWins++;
+    loseCounter++;
+    //return 'computer';
+  }
+  return computerHand;
+}
+
+function Test1(prevComputerHand) {
+  if (prevComputerHand == 'null' || draw > 0) {
+    return randomGame();
+  }
+  if (loseCounter == 0) {
+    if (prevComputerHand == 'rock') {
+      return 'paper';
+    }
+    if (prevComputerHand == 'paper') {
+      return 'scissors';
+    }
+    if (prevComputerHand == 'scissors') {
+      return 'rock';
+    }
+  }
+  if (loseCounter > 0) {
+    if (prevComputerHand == 'rock') {
+      return 'paper';
+    }
+    if (prevComputerHand == 'paper') {
+      return 'scissors';
+    }
+    if (prevComputerHand == 'scissors') {
+      return 'rock';
+    }
+  }
+}
+
+// Runs the Test
+function testGame() {
+  var i = 100;
+  while (i > 0) {
+    testGameHelper();
+    i--;
+  }
+  const myParagraph = document.getElementById("result");
+  myParagraph.innerHTML = `Computer: ${computerWins}  Player: ${playerWins} Draws: ${drawGames}`;
+}
+
+function testGameHelper() {
+  const playerChoice = Test1(prevComputerHand);
+  const computerChoice = round(playerChoice);
+  if (playerChoice === 'rock') {
+    handsPlayed[0]++;
+  } else if (playerChoice === 'paper') {
+    handsPlayed[1]++;
+  } else {
+    handsPlayed[2]++;
+  }
+
+  prevComputerHand = computerChoice;
+  prevPlayerHand = playerChoice;
+}

@@ -4,6 +4,7 @@ var draw = 0;
 var loseCounter = 0;
 var playerWins = 0;
 var computerWins = 0;
+var drawGames = 0;
 var prevComputerHand = 'null';
 
 var handsPlayed = [0,0,0];
@@ -15,6 +16,7 @@ function round(playerHand, computerHand) {
         if (computerHand == 'rock') {
             draw +=1;
             loseCounter = 0
+            drawGames++;
             return 'draw';
         }
         if (computerHand == 'paper') {
@@ -33,7 +35,8 @@ function round(playerHand, computerHand) {
     if (playerHand == 'paper') {
         if (computerHand == 'paper') {
             draw +=1;
-            loseCounter = 0
+            loseCounter = 0;
+            drawGames++;
             return 'draw';
         }
         if (computerHand == 'scissors') {
@@ -52,7 +55,8 @@ function round(playerHand, computerHand) {
     if (playerHand == 'scissors') {
         if (computerHand == 'scissors') {
             draw +=1;
-            loseCounter = 0
+            loseCounter = 0;
+            drawGames++;
             return 'draw';
         }
         if (computerHand == 'rock') {

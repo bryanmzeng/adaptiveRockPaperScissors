@@ -456,13 +456,6 @@ function testGame() {
 function testGameHelper() {
   const playerChoice = Test1(prevComputerHand);
   const computerChoice = round(playerChoice);
-  if (playerChoice === 'rock') {
-    handsPlayed[0]++;
-  } else if (playerChoice === 'paper') {
-    handsPlayed[1]++;
-  } else {
-    handsPlayed[2]++;
-  }
 
   prevComputerHand = computerChoice;
   prevPlayerHand = playerChoice;

@@ -48,53 +48,87 @@ function restart() {
 }
 
 function playrock() {
-    handsPlayed[0]++;
-    const computerChoice = getComputerChoice(prevPlayerHand);
+    const computerChoice = getComputerChoice("rock");
     const winner = round('rock', computerChoice);
     showWinner(winner, computerChoice);
     prevPlayerHand = 'rock';
 }
 
 function playpaper() {
-    handsPlayed[1]++;
-    const computerChoice = getComputerChoice(prevPlayerHand);
+    const computerChoice = getComputerChoice("paper");
     const winner = round('paper', computerChoice);
     showWinner(winner, computerChoice);
     prevPlayerHand = 'paper';
 }
 
 function playscissor() {
-    handsPlayed[2]++;
-    const computerChoice = getComputerChoice(prevPlayerHand);
+    const computerChoice = getComputerChoice("scissors");
     const winner = round('scissors', computerChoice);
     showWinner(winner, computerChoice);
     prevPlayerHand = 'scissors';
 }
 
-function majorityGame(hand) {
-    if (hand == "rock") {
-        return "paper";
-    } else if (hand == "paper") {
-        return "scissors";
+function simulateRandomGame(playerMove, computerMove) {
+    if (playerMove === computerMove) {
+      return 'draw';
+    } else if (
+      (playerMove === 'rock' && computerMove === 'scissors') ||
+      (playerMove === 'paper' && computerMove === 'rock') ||
+      (playerMove === 'scissors' && computerMove === 'paper')
+    ) {
+      return 'player';
     } else {
-        return "rock";
+      return 'computer';
     }
+  }
+  
+function simulateMCTSGames(playerMove, iterations = 10) {
+    const moveCounts = [0, 0, 0];
+  
+    for (let i = 0; i < iterations; i++) {
+      const computerHand = getRandomMove();
+      const result = simulateRandomGame(playerMove, computerHand);
+      moveCounts[hands.indexOf(computerHand)] += result === 'computer' ? 1 : 0.5;
+    }
+  
+    // Choose the best move based on win rates
+    const bestMoveIndex = moveCounts.indexOf(Math.max(...moveCounts));
+    return hands[bestMoveIndex];
 }
 
-function randomGame() {
-    const r = Math.floor(Math.random() * 3);
-    if (r == 0) {
-        return 'rock';
+function getRandomMove() {
+    return hands[Math.floor(Math.random() * hands.length)];
+}
+function getComputerChoice(playerHand) {
+    // Update computer's move using MCTS
+    const computerHand = simulateMCTSGames(playerHand, 10);
+    
+    prevComputerHand = computerHand;
+  
+    // Update the handsPlayed array
+    handsPlayed[hands.indexOf(playerHand)]++;
+  
+    // Update game statistics
+    if (playerHand === computerHand) {
+      draw++;
+      loseCounter = 0;
+      //return 'draw';
+    } else if (
+      (playerHand === 'rock' && computerHand === 'scissors') ||
+      (playerHand === 'paper' && computerHand === 'rock') ||
+      (playerHand === 'scissors' && computerHand === 'paper')
+    ) {
+      playerWins++;
+      loseCounter++;
+      //return 'player';
+    } else {
+      computerWins++;
+      //return 'computer';
     }
-    if (r == 1) {
-        return 'paper';
-    }
-    if (r == 2) {
-        return 'scissors';
-    }
+    return computerHand;
 }
 
-function winGame(prevPlayerHand) {
+/*function winGame(prevPlayerHand) {
     return prevPlayerHand;
 }
 
@@ -108,7 +142,7 @@ function loseGame(prevPlayerHand) {
     if (prevPlayerHand == 'scissors') {
         return 'rock';
     }
-}
+} */
 
 function round(playerHand, computerHand) {
     if (playerHand == 'rock') {
@@ -164,7 +198,7 @@ function round(playerHand, computerHand) {
     }
 
 }
-
+/*
 function getComputerChoice(prevPlayerHand) {
      var sum = 0;
         for (let i = 0; i < 3; i++) {
@@ -197,18 +231,16 @@ function getComputerChoice(prevPlayerHand) {
     //add wingame2 and losegame2 with weighted rng so that if the computer collects data that the player is trying to big brain it can counter it
     //can make this play case 3
 
-}
+} */
 
 function showWinner(winner, computerChoice) {
     if(winner == 'player') {
-        playerWins++;
         document.getElementById("result").innerHTML = `
         <h1 class="text-win">You Won!</h1>
         
     <p>Computer Chose <strong>${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)}</strong></p>
     `;
     } else if(winner == 'computer') {
-        computerWins++;
         document.getElementById("result").innerHTML = `
         <h1 class="text-lose">You Lost.</h1>
        
